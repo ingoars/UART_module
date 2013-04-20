@@ -6,11 +6,24 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+
+package UART_module_pack is
+   component UART_module is
+   Port (CLK : in  STD_LOGIC;
+			Tx : out  STD_LOGIC := '1';
+			Din : in  STD_LOGIC_VECTOR (7 downto 0);
+         Rx:   in  STD_LOGIC;
+         Dout: out STD_LOGIC_VECTOR (7 downto 0);
+         Trig : in  STD_LOGIC);
+   end component;
+end package;
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity UART_module is
-
 	 Port ( 	CLK : in  STD_LOGIC;
 				Tx : out  STD_LOGIC := '1';
 				Din : in  STD_LOGIC_VECTOR (7 downto 0);
@@ -95,8 +108,10 @@ begin
 	process (CLK)
 	begin
 		if rising_edge(CLK) then
-			if TrigCLKen = '1' and TrigA = '0' and Trig = '1' then
+			--if TrigCLKen = '1' and TrigA = '0' and Trig = '1' then
+         if Trig = '1' then
 				TrigEn <= '1';
+            Buffer_Tx <= Din;
 			elsif Prescaler_Tx_Listo = '1' and Estado_actual_Tx = Et_silencio then
 			   TrigEn <= '0';
 			end if;
@@ -123,7 +138,6 @@ begin
 			when Et_silencio =>
 				if TrigEn = '1' then
 				   Estado_actual_Tx <= Et_arranque;
-					Buffer_Tx <= Din;
 				end if;
 			when Et_arranque =>
 				Estado_actual_Tx <= Et_datos;

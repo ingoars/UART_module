@@ -1,0 +1,3 @@
+NET "clk"   LOC = "B8";
+NET "RX" LOC = "L15";
+NET "TX" LOC = "K12";
